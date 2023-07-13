@@ -157,6 +157,12 @@
 @endsection
 
 @section('content')
+    @php
+    $method = "get_static_option_central";
+        if (is_null(tenant())){
+            $method = "get_static_option";
+        }
+    @endphp
     <div class="dashboard-recent-order">
         <div class="row">
             <x-flash-msg/>
@@ -175,8 +181,9 @@
                                 {{__("you can configure google analytics (GT4) into the website.")}}
                             </p>
                             <div class="btn-group-wrap">
-                                <a href="#" data-status=""  class="pl-btn pl_active_deactive">{{true ? __("Deactivate") : __("Active") }}</a>
-                                <a href="#" data-status=""  class="pl-btn pl_delete">{{__("Settings") }}</a>
+                                <a href="#" data-option="google_analytics_gt4_status" data-status="{{$method("google_analytics_gt4_status")}}" class="pl-btn pl_active_deactive">{{$method("google_analytics_gt4_status") == 'on' ? __("Deactivate") : __("Active") }}</a>
+                                <a href="#" data-bs-target="#google_analytics_modal" data-bs-toggle="modal"
+                                   class="pl-btn pl_delete">{{__("Settings") }}</a>
                             </div>
                         </div>
                         <div class="plugin-card">
@@ -270,13 +277,83 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" tabindex="-1" id="google_analytics_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{__("Google Analytics GT4")}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{route(route_prefix().'integration')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="data_type" value="google_analytics">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="#">{{__("Google Analytics GT4 ID")}}</label>
+                            <input type="text"
+                                   name="google_analytics_gt4_ID"
+                                   class="form-control"
+                                   value="{{$method("google_analytics_gt4_ID")}}"
+                            >
+                        </div>
+                        @if(is_null(tenant()))
+                        <div class="form-group">
+                            <label for=""><strong>{{__("Tenant")}}</strong></label>
+                            <label class="switch">
+                                <input type="checkbox" name="google_analytics_gt4_tenant" @if(!empty($method("google_analytics_gt4_ID"))) checked @endif>
+                                <span class="slider onff"></span>
+                            </label>
+                            <small>{{__("load this script in tenant websites")}}</small>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('Save changes')}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 @section('scripts')
     <script>
         (function ($){
             "use strict";
 
-            //todo::
+            $(document).on("click",'.pl_active_deactive',function (e){
+                e.preventDefault();
+                var el = $(this);
+                Swal.fire({
+                    title: '{{__("Are you sure?")}}',
+                    text: '{{__("you will able revert your decision anytime")}}',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{__('Yes!')}}",
+                    cancelButtonText: "{{__('Cancel')}}",
+
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        //todo: ajax call
+                        let optionName =  el.data('option');
+                        let status = el.data('status');
+
+                        axios.post("{{route(route_prefix()."integration.activation")}}", {
+                            option_name: optionName,
+                            status: status
+                        })
+                        .then((response) => {
+                           if(response.data.type === 'success'){
+                              location.reload();
+                           }
+                        });
+                    }
+                });
+            })
 
         })(jQuery);
     </script>

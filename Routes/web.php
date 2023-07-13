@@ -16,6 +16,8 @@
 -------------------------------------------- */
 Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'prefix' => 'admin-home'],function () {
     Route::get("integrations-manage",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"index"])->name("landlord.integration");
+    Route::post("integrations-manage",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"store"]);
+    Route::post("integrations-manage/active",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"activate"])->name('landlord.integration.activation');
 });
 
 

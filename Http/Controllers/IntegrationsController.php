@@ -23,13 +23,43 @@ class IntegrationsController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     * @return Renderable
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function add_new()
+    public function store(Request $request)
     {
-//        $stats = Storage::copy('app/plugins-file/SiteWayPaymentGateway',"Modules/");
-        //return view('pluginmanage::plugin-manage.add_new');
+        $request->validate([
+            'data_type' => 'required',
+        ]);
+
+        match ($request->data_type){
+            "google_analytics" => $this->google_analytics()
+        };
+
+        return back()->with(['msg' => __('Settings updated'),'type' => 'success']);
     }
 
+    private function google_analytics(){
+        $req = \request();
+        if (!is_null(tenant())){
+            update_static_option_central('google_analytics_gt4_ID',$req->google_analytics_gt4_ID);
+            update_static_option_central('google_analytics_gt4_tenant',$req->google_analytics_gt4_tenant ? 'on' : '');
+        }else{
+            update_static_option('google_analytics_gt4_ID',$req->google_analytics_gt4_ID);
+        }
+    }
+
+    public function activate(Request $request){
+        $request->validate([
+            'status' => 'nullable',
+            'option_name' => "required"
+        ]);
+        if (!is_null(tenant())){
+            update_static_option_central($request->option_name,$request->status === 'on' ? 'off' : 'on');
+        }else{
+            update_static_option($request->option_name,$request->status === 'on' ? 'off' : 'on');
+        }
+
+        return response()->json(['msg' => __('Settings Updated'),'type' => 'success']);
+    }
 
 }
