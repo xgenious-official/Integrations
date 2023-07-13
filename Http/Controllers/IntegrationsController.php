@@ -32,7 +32,10 @@ class IntegrationsController extends Controller
         ]);
 
         match ($request->data_type){
-            "google_analytics" => $this->google_analytics()
+            "google_analytics" => $this->google_analytics(),
+            "google_tag_manager" => $this->google_tag_manager(),
+            "facebook_pixels" => $this->facebook_pixels(),
+            "adroll_pixels" => $this->adroll_pixels(),
         };
 
         return back()->with(['msg' => __('Settings updated'),'type' => 'success']);
@@ -40,7 +43,7 @@ class IntegrationsController extends Controller
 
     private function google_analytics(){
         $req = \request();
-        if (!is_null(tenant())){
+        if (is_null(tenant())){
             update_static_option_central('google_analytics_gt4_ID',$req->google_analytics_gt4_ID);
             update_static_option_central('google_analytics_gt4_tenant',$req->google_analytics_gt4_tenant ? 'on' : '');
         }else{
@@ -53,13 +56,48 @@ class IntegrationsController extends Controller
             'status' => 'nullable',
             'option_name' => "required"
         ]);
-        if (!is_null(tenant())){
+        if (is_null(tenant())){
             update_static_option_central($request->option_name,$request->status === 'on' ? 'off' : 'on');
         }else{
             update_static_option($request->option_name,$request->status === 'on' ? 'off' : 'on');
         }
 
         return response()->json(['msg' => __('Settings Updated'),'type' => 'success']);
+    }
+
+    private function google_tag_manager()
+    {
+        $req = \request();
+        if (is_null(tenant())){
+            update_static_option_central('google_tag_manager_ID',$req->google_tag_manager_ID);
+            update_static_option_central('google_tag_manager_tenant',$req->google_tag_manager_tenant ? 'on' : '');
+        }else{
+            update_static_option('google_tag_manager_ID',$req->google_tag_manager_ID);
+        }
+    }
+
+    private function facebook_pixels()
+    {
+        $req = \request();
+        if (is_null(tenant())){
+            update_static_option_central('facebook_pixels_id',$req->facebook_pixels_id);
+            update_static_option_central('facebook_pixels_tenant',$req->facebook_pixels_tenant ? 'on' : '');
+        }else{
+            update_static_option('facebook_pixels_id',$req->facebook_pixels_id);
+        }
+    }
+
+    private function adroll_pixels()
+    {
+        $req = \request();
+        if (is_null(tenant())){
+            update_static_option_central('adroll_adviser_id',$req->adroll_adviser_id);
+            update_static_option_central('adroll_publisher_id',$req->adroll_publisher_id);
+            update_static_option_central('adroll_pixels_tenant',$req->adroll_pixels_tenant ? 'on' : '');
+        }else{
+            update_static_option('adroll_adviser_id',$req->adroll_adviser_id);
+            update_static_option('adroll_publisher_id',$req->adroll_publisher_id);
+        }
     }
 
 }

@@ -159,7 +159,7 @@
 @section('content')
     @php
     $method = "get_static_option_central";
-        if (is_null(tenant())){
+        if (!is_null(tenant())){
             $method = "get_static_option";
         }
     @endphp
@@ -194,8 +194,8 @@
                                 {{__("you can configure google tag manager into the website.")}}
                             </p>
                             <div class="btn-group-wrap">
-                                <a href="#" data-status=""  class="pl-btn pl_active_deactive">{{true ? __("Deactivate") : __("Active") }}</a>
-                                <a href="#" data-status=""  class="pl-btn pl_delete">{{__("Settings") }}</a>
+                                <a href="#" data-option="google_tag_manager_status" data-status="{{$method("google_tag_manager_status")}}" class="pl-btn pl_active_deactive">{{$method("google_tag_manager_status") == 'on' ? __("Deactivate") : __("Active") }}</a>
+                                <a href="#" data-bs-target="#google_tag_manager_modal" data-bs-toggle="modal"  class="pl-btn pl_delete">{{__("Settings") }}</a>
                             </div>
                         </div>
                         <div class="plugin-card">
@@ -203,11 +203,11 @@
                                 <strong class="facebook_pixels">{{__("Facebook Pixels")}}</strong>
                             </div>
                             <p class="plugin-meta">
-                                {{__("you can configure google analytics (GT4) into the website.")}}
+                                {{__("you can configure facebook pixels into the website.")}}
                             </p>
                             <div class="btn-group-wrap">
-                                <a href="#" data-status=""  class="pl-btn pl_active_deactive">{{true ? __("Deactivate") : __("Active") }}</a>
-                                <a href="#" data-status=""  class="pl-btn pl_delete">{{__("Settings") }}</a>
+                                <a href="#" data-option="facebook_pixels_status" data-status="{{$method("facebook_pixels_status")}}"  class="pl-btn pl_active_deactive">{{$method("facebook_pixels_status") == 'on' ? __("Deactivate") : __("Active") }}</a>
+                                <a href="#" data-bs-target="#facebook_pixels_modal" data-bs-toggle="modal"  class="pl-btn pl_delete">{{__("Settings") }}</a>
                             </div>
                         </div>
                         <div class="plugin-card">
@@ -215,11 +215,11 @@
                                 <strong class="addroll">{{__("Adroll")}}</strong>
                             </div>
                             <p class="plugin-meta">
-                                {{__("you can configure google analytics (GT4) into the website.")}}
+                                {{__("you can configure AdRoll into the website.")}}
                             </p>
                             <div class="btn-group-wrap">
-                                <a href="#" data-status=""  class="pl-btn pl_active_deactive">{{true ? __("Deactivate") : __("Active") }}</a>
-                                <a href="#" data-status=""  class="pl-btn pl_delete">{{__("Settings") }}</a>
+                                <a href="#" data-option="adroll_pixels_status" data-status="{{$method("adroll_pixels_status")}}"  class="pl-btn pl_active_deactive">{{$method("adroll_pixels_status") == 'on' ? __("Deactivate") : __("Active") }}</a>
+                                <a href="#" data-bs-target="#adroll_pixels_modal" data-bs-toggle="modal"   class="pl-btn pl_delete">{{__("Settings") }}</a>
                             </div>
                         </div>
                         <div class="plugin-card">
@@ -227,7 +227,7 @@
                                 <strong class="whatsapp">{{__("What's App")}}</strong>
                             </div>
                             <p class="plugin-meta">
-                                {{__("you can configure google analytics (GT4) into the website.")}}
+                                {{__("you can configure What's App into the website.")}}
                             </p>
                             <div class="btn-group-wrap">
                                 <a href="#" data-status=""  class="pl-btn pl_active_deactive">{{true ? __("Deactivate") : __("Active") }}</a>
@@ -239,7 +239,7 @@
                                 <strong class="twakto">{{__("Twak.to Api")}}</strong>
                             </div>
                             <p class="plugin-meta">
-                                {{__("you can configure google analytics (GT4) into the website.")}}
+                                {{__("you can configure Twak.to into the website.")}}
                             </p>
                             <div class="btn-group-wrap">
                                 <a href="#" data-status=""  class="pl-btn pl_active_deactive">{{true ? __("Deactivate") : __("Active") }}</a>
@@ -252,7 +252,7 @@
                                 <strong class="crisp">{{__("Crsip")}}</strong>
                             </div>
                             <p class="plugin-meta">
-                                {{__("you can configure google analytics (GT4) into the website.")}}
+                                {{__("you can configure Crsip into the website.")}}
                             </p>
                             <div class="btn-group-wrap">
                                 <a href="#" data-status=""  class="pl-btn pl_active_deactive">{{true ? __("Deactivate") : __("Active") }}</a>
@@ -264,7 +264,7 @@
                                 <strong class="tidio">{{__("Tidio")}}</strong>
                             </div>
                             <p class="plugin-meta">
-                                {{__("you can configure google analytics (GT4) into the website.")}}
+                                {{__("you can configure Tidio into the website.")}}
                             </p>
                             <div class="btn-group-wrap">
                                 <a href="#" data-status=""  class="pl-btn pl_active_deactive">{{true ? __("Deactivate") : __("Active") }}</a>
@@ -274,6 +274,91 @@
 
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="adroll_pixels_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{__("AdRoll Pixels")}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{route(route_prefix().'integration')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="data_type" value="adroll_pixels">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="#">{{__("Adroll Adviser ID")}}</label>
+                            <input type="text"
+                                   name="adroll_adviser_id"
+                                   class="form-control"
+                                   value="{{$method("adroll_adviser_id")}}"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="#">{{__("Adroll Publisher ID")}}</label>
+                            <input type="text"
+                                   name="adroll_publisher_id"
+                                   class="form-control"
+                                   value="{{$method("adroll_publisher_id")}}"
+                            >
+                        </div>
+                        @if(is_null(tenant()))
+                        <div class="form-group">
+                            <label for=""><strong>{{__("Tenant")}}</strong></label>
+                            <label class="switch">
+                                <input type="checkbox" name="adroll_pixels_tenant" @if(!empty($method("adroll_pixels_tenant"))) checked @endif>
+                                <span class="slider onff"></span>
+                            </label>
+                            <small>{{__("load this script in tenant websites")}}</small>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('Save changes')}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+   <div class="modal fade" tabindex="-1" id="facebook_pixels_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{__("Facebook Pixels")}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{route(route_prefix().'integration')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="data_type" value="facebook_pixels">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="#">{{__("Facebook Pixels ID")}}</label>
+                            <input type="text"
+                                   name="facebook_pixels_id"
+                                   class="form-control"
+                                   value="{{$method("facebook_pixels_id")}}"
+                            >
+                        </div>
+                        @if(is_null(tenant()))
+                        <div class="form-group">
+                            <label for=""><strong>{{__("Tenant")}}</strong></label>
+                            <label class="switch">
+                                <input type="checkbox" name="facebook_pixels_tenant" @if(!empty($method("facebook_pixels_tenant"))) checked @endif>
+                                <span class="slider onff"></span>
+                            </label>
+                            <small>{{__("load this script in tenant websites")}}</small>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('Save changes')}}</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -301,7 +386,46 @@
                         <div class="form-group">
                             <label for=""><strong>{{__("Tenant")}}</strong></label>
                             <label class="switch">
-                                <input type="checkbox" name="google_analytics_gt4_tenant" @if(!empty($method("google_analytics_gt4_ID"))) checked @endif>
+                                <input type="checkbox" name="google_analytics_gt4_tenant" @if(!empty($method("google_analytics_gt4_tenant"))) checked @endif>
+                                <span class="slider onff"></span>
+                            </label>
+                            <small>{{__("load this script in tenant websites")}}</small>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('Close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('Save changes')}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="google_tag_manager_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{__("Google Tag Manager")}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{route(route_prefix().'integration')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="data_type" value="google_tag_manager">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="#">{{__("Google Tag Manager ID")}}</label>
+                            <input type="text"
+                                   name="google_tag_manager_ID"
+                                   class="form-control"
+                                   value="{{$method("google_tag_manager_ID")}}"
+                            >
+                        </div>
+                        @if(is_null(tenant()))
+                        <div class="form-group">
+                            <label for=""><strong>{{__("Tenant")}}</strong></label>
+                            <label class="switch">
+                                <input type="checkbox" name="google_tag_manager_tenant" @if(!empty($method("google_tag_manager_tenant"))) checked @endif>
                                 <span class="slider onff"></span>
                             </label>
                             <small>{{__("load this script in tenant websites")}}</small>
