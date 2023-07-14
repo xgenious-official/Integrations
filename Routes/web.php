@@ -20,7 +20,12 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
     Route::post("integrations-manage/active",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"activate"])->name('landlord.integration.activation');
 });
 
-
-//Route::prefix('pluginmanage')->group(function() {
-//    Route::get('/', 'PluginManageController@index');
-//});
+Route::group(['middleware' => [
+    'auth:admin','adminglobalVariable', 'set_lang',
+    \App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware::class,
+    \Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains::class,
+],'prefix' => 'admin-home'],function () {
+    Route::get("integrations-manage",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"index"])->name("tenant.integration");
+    Route::post("integrations-manage",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"store"]);
+    Route::post("integrations-manage/active",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"activate"])->name('tenant.integration.activation');
+});
