@@ -36,6 +36,11 @@ class IntegrationsController extends Controller
             "google_tag_manager" => $this->google_tag_manager(),
             "facebook_pixels" => $this->facebook_pixels(),
             "adroll_pixels" => $this->adroll_pixels(),
+            "whatsapp" => $this->whatsapp(),
+            "twakto" => $this->twakto(),
+            "crsip" => $this->crsip(),
+            "tidio" => $this->tidio(),
+            "messenger" => $this->messenger(),
         };
 
         return back()->with(['msg' => __('Settings updated'),'type' => 'success']);
@@ -98,6 +103,38 @@ class IntegrationsController extends Controller
             update_static_option('adroll_adviser_id',$req->adroll_adviser_id);
             update_static_option('adroll_publisher_id',$req->adroll_publisher_id);
         }
+    }
+
+    private function whatsapp()
+    {
+        $req = \request();
+        update_static_option('whatsapp_mobile_number',$req->whatsapp_mobile_number);
+        update_static_option('whatsapp_initial_text',$req->whatsapp_initial_text);
+
+    }
+
+    private function twakto()
+    {
+        $req = \request();
+        update_static_option('twakto_widget_id',$req->twakto_widget_id);
+    }
+
+    private function crsip()
+    {
+        $req = \request();
+        update_static_option('crsip_website_id',$req->crsip_website_id);
+    }
+
+    private function tidio()
+    {
+        $req = \request();
+        update_static_option('tidio_chat_page_id',$req->tidio_chat_page_id);
+    }
+
+    private function messenger()
+    {
+        $req = \request();
+        update_static_option('messenger_page_id',$req->messenger_page_id);
     }
 
 }

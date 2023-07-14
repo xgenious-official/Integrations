@@ -1,6 +1,6 @@
 @php
     $method = "get_static_option_central";
-      if (is_null(tenant())){
+      if (!is_null(tenant())){
           $method = "get_static_option";
       }
 @endphp
