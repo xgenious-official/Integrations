@@ -24,8 +24,8 @@ Route::group(['middleware' => [
     'auth:admin','adminglobalVariable', 'set_lang',
     \App\Http\Middleware\Tenant\InitializeTenancyByDomainCustomisedMiddleware::class,
     \Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains::class,
-],'prefix' => 'admin-home'],function () {
-    Route::get("integrations-manage",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"index"])->name("tenant.integration");
-    Route::post("integrations-manage",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"store"]);
-    Route::post("integrations-manage/active",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"activate"])->name('tenant.integration.activation');
+],'prefix' => 'admin-home/integrations/tenant'],function () {
+    Route::get("manage",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"index"])->name("tenant.integration");
+    Route::post("manage",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"store"]);
+    Route::post("manage/active",[\Modules\Integrations\Http\Controllers\IntegrationsController::class,"activate"])->name('tenant.integration.activation');
 });
